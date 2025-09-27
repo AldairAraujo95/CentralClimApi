@@ -7,23 +7,44 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@Getter
 @Setter
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
-
+@NoArgsConstructor
 @Entity
 @Table(name = "servicos")
-
 
 public class Servico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nome;
+
+    // tipo de servico
+    @Column(name = "descricao")
     private String descricao;
-    private BigDecimal preco;
+
+    //data do agendamento
+    @Column(name = "data_agendamento")
+    private LocalDateTime dataAgendamento;
+
+    private BigDecimal valor;
+
+    //Funcionario que vai fazer o servico
+    @ManyToOne
+    @JoinColumn(name = "usuario_id") // relacionando com a tabela usuario
+    private Usuario usuario;
+
+    //Cliente
+    @ManyToOne
+    @JoinColumn(name = "cliente_id") // relacionando com a tabela clientes
+    private Cliente cliente;
+
+    //controlar o andamento do servico
+    @Enumerated(EnumType.STRING)
+    private StatusServico status;
 
 
 

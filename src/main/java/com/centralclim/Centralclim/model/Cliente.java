@@ -8,19 +8,20 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-
+@NoArgsConstructor
 @Entity
-@Table(name = "tecnicos")
+@Table(name = "clientes")
 
-public class Tecnico {
+public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
+    private String email;
     private String telefone;
-    private  String disponibilidade;
+    private String endereco;
+
 
 
 }
