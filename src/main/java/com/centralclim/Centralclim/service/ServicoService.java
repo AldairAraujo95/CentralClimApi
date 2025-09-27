@@ -11,6 +11,9 @@ import com.centralclim.Centralclim.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 
 public class ServicoService {
@@ -44,5 +47,24 @@ public class ServicoService {
 
         // Salva a nova entidade no banco
         return servicoRepository.save(novoServico);
+    }
+
+
+    //  Lista todos os serviços
+    public List<Servico> listarServicos() {
+        return servicoRepository.findAll();
+    }
+
+    //  Busca um serviço por ID
+    public Optional<Servico> buscarPorId(Long id) {
+        return servicoRepository.findById(id);
+    }
+
+    public Servico atualizarStatus(Long id, StatusServico novoStatus) {
+        Servico servico = servicoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Serviço não encontrado!"));
+
+        servico.setStatus(novoStatus);
+        return servicoRepository.save(servico);
     }
 }

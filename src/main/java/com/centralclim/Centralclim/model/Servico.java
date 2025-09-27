@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 
 @Setter
 @Getter
@@ -28,7 +28,7 @@ public class Servico {
 
     //data do agendamento
     @Column(name = "data_agendamento")
-    private LocalDateTime dataAgendamento;
+    private LocalDate dataAgendamento;
 
     private BigDecimal valor;
 
