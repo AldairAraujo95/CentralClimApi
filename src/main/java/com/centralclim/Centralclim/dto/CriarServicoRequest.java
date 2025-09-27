@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
 
 @Getter
 @Setter
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 public class CriarServicoRequest {
     private String descricao;
     private BigDecimal valor;
-    private LocalDateTime dataAgendamento;
+    private LocalDate dataAgendamento;
     private Long clienteId;
     private Long tecnicoId;
 

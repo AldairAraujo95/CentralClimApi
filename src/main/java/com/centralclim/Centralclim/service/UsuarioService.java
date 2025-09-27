@@ -31,6 +31,11 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
+    public Usuario salvar(Usuario usuario) {
+        return usuarioRepository.save(usuario);
+    }
+
+
 
 
 
