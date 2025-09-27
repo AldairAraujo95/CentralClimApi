@@ -2,13 +2,13 @@ package com.centralclim.Centralclim.controller;
 
 import com.centralclim.Centralclim.dto.LoginRequest;
 import com.centralclim.Centralclim.dto.LoginResponse;
+import com.centralclim.Centralclim.model.Usuario;
 import com.centralclim.Centralclim.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -26,5 +26,11 @@ public class UsuarioController {
             // Retorna um erro de "Não Autorizado" se o login falhar
             return ResponseEntity.status(401).build();
         }
+    }
+
+    @GetMapping("/usuarios")
+    public ResponseEntity<List<Usuario>> listarUsuarios() {
+        List<Usuario> usuarios = usuarioService.listarUsuarios();
+        return ResponseEntity.ok(usuarios);
     }
 }

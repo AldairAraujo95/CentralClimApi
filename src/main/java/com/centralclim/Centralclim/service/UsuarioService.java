@@ -5,6 +5,7 @@ import com.centralclim.Centralclim.dto.LoginRequest;
 import com.centralclim.Centralclim.dto.LoginResponse;
 import com.centralclim.Centralclim.model.Usuario;
 import com.centralclim.Centralclim.repository.UsuarioRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,4 +26,12 @@ public class UsuarioService {
             throw new RuntimeException("Senha inválida!");
         }
     }
+
+    public List<Usuario> listarUsuarios() {
+        return usuarioRepository.findAll();
+    }
+
+
+
+
 }
