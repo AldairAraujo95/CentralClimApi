@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-
 public class ServicoService {
+
     @Autowired
     private ServicoRepository servicoRepository;
 
@@ -26,45 +26,77 @@ public class ServicoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    // 🔹 Criar novo serviço
     public Servico agendarServico(CriarServicoRequest request) {
-        // Busca as entidades completas no banco a partir dos IDs recebidos no DTO
+        // Busca cliente
         Cliente cliente = clienteRepository.findById(request.getClienteId())
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado!"));
 
+        // Busca técnico (usuário)
         Usuario tecnico = usuarioRepository.findById(request.getTecnicoId())
                 .orElseThrow(() -> new RuntimeException("Técnico não encontrado!"));
 
-        // Cria a nova entidade Servico
+        // Cria novo serviço
         Servico novoServico = new Servico();
         novoServico.setDescricao(request.getDescricao());
         novoServico.setValor(request.getValor());
         novoServico.setDataAgendamento(request.getDataAgendamento());
         novoServico.setStatus(StatusServico.AGENDADO);
-
-        // Associa as entidades relacionadas
         novoServico.setCliente(cliente);
         novoServico.setUsuario(tecnico);
 
-        // Salva a nova entidade no banco
         return servicoRepository.save(novoServico);
     }
 
-
-    //  Lista todos os serviços
+    // 🔹 Listar todos os serviços
     public List<Servico> listarServicos() {
         return servicoRepository.findAll();
     }
 
-    //  Busca um serviço por ID
+    // 🔹 Buscar por ID
     public Optional<Servico> buscarPorId(Long id) {
         return servicoRepository.findById(id);
     }
 
+    // 🔹 Atualizar apenas o status
     public Servico atualizarStatus(Long id, StatusServico novoStatus) {
         Servico servico = servicoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Serviço não encontrado!"));
 
         servico.setStatus(novoStatus);
         return servicoRepository.save(servico);
+    }
+
+    // 🔹 Listar serviços por funcionário (usado pelo app Android)
+    public List<Servico> listarPorFuncionario(Long idFuncionario) {
+        return servicoRepository.findByUsuarioId(idFuncionario);
+    }
+
+    // 🔹 Atualizar um serviço completo (descrição, valor, data, cliente, técnico)
+    public Servico atualizarServico(Long id, CriarServicoRequest request) {
+        Servico servicoExistente = servicoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Serviço não encontrado!"));
+
+        Cliente cliente = clienteRepository.findById(request.getClienteId())
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado!"));
+
+        Usuario tecnico = usuarioRepository.findById(request.getTecnicoId())
+                .orElseThrow(() -> new RuntimeException("Técnico não encontrado!"));
+
+        servicoExistente.setDescricao(request.getDescricao());
+        servicoExistente.setValor(request.getValor());
+        servicoExistente.setDataAgendamento(request.getDataAgendamento());
+        servicoExistente.setCliente(cliente);
+        servicoExistente.setUsuario(tecnico);
+        servicoExistente.setStatus(request.getStatus() != null ? request.getStatus() : servicoExistente.getStatus());
+
+        return servicoRepository.save(servicoExistente);
+    }
+
+    // 🔹 Excluir serviço
+    public void deletarServico(Long id) {
+        Servico servico = servicoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Serviço não encontrado!"));
+        servicoRepository.delete(servico);
     }
 }

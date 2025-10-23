@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
 
 @RestController
@@ -18,6 +17,7 @@ public class ServicoController {
 
     @Autowired
     private ServicoService servicoService;
+
 
     @PostMapping
     public ResponseEntity<Servico> criarServico(@RequestBody CriarServicoRequest request) {
@@ -29,10 +29,12 @@ public class ServicoController {
         }
     }
 
+
     @GetMapping
     public ResponseEntity<List<Servico>> listarServicos() {
         return ResponseEntity.ok(servicoService.listarServicos());
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Servico> buscarPorId(@PathVariable Long id) {
@@ -40,6 +42,7 @@ public class ServicoController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
 
     @PatchMapping("/{id}/status")
     public ResponseEntity<Servico> atualizarStatus(
@@ -54,4 +57,32 @@ public class ServicoController {
         }
     }
 
+    // Listar serviços por funcionário
+    @GetMapping("/funcionario/{idFuncionario}")
+    public ResponseEntity<List<Servico>> listarPorFuncionario(@PathVariable Long idFuncionario) {
+        List<Servico> servicos = servicoService.listarPorFuncionario(idFuncionario);
+        return ResponseEntity.ok(servicos);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        try {
+            servicoService.deletarServico(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Servico> atualizarServico(@PathVariable Long id, @RequestBody CriarServicoRequest request) {
+        try {
+            Servico atualizado = servicoService.atualizarServico(id, request);
+            return ResponseEntity.ok(atualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }
