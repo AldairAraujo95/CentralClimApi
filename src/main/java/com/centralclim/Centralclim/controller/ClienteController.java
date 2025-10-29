@@ -34,4 +34,32 @@ public class ClienteController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarCliente(@PathVariable Long id) {
+        try {
+            clienteService.deletarCliente(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Cliente> atualizarCliente(@PathVariable Long id, @RequestBody Cliente clienteAtualizado) {
+        return clienteService.buscarClientePorId(id)
+                .map(clienteExistente -> {
+                    clienteExistente.setNome(clienteAtualizado.getNome());
+                    clienteExistente.setEmail(clienteAtualizado.getEmail());
+                    clienteExistente.setCpf(clienteAtualizado.getCpf());
+                    clienteExistente.setTelefone(clienteAtualizado.getTelefone());
+                    clienteExistente.setCep(clienteAtualizado.getCep());
+                    clienteExistente.setEndereco(clienteAtualizado.getEndereco());
+
+                    Cliente clienteSalvo = clienteService.criarCliente(clienteExistente);
+                    return ResponseEntity.ok(clienteSalvo);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }

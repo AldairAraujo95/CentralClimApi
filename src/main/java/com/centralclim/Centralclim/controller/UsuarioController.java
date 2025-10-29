@@ -8,38 +8,57 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/usuarios")
+@CrossOrigin(origins = "*")
 public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
 
+    // 🔹 LOGIN
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
             LoginResponse response = usuarioService.autenticar(loginRequest);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            // Retorna um erro de "Não Autorizado" se o login falhar
-            return ResponseEntity.status(401).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
 
-    @GetMapping("/usuarios")
+    // 🔹 LISTAR TODOS
+    @GetMapping
     public ResponseEntity<List<Usuario>> listarUsuarios() {
-        List<Usuario> usuarios = usuarioService.listarUsuarios();
-        return ResponseEntity.ok(usuarios);
+        return ResponseEntity.ok(usuarioService.listarUsuarios());
     }
 
-    @PostMapping("/usuarios")
+    // 🔹 BUSCAR POR ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.buscarPorId(id));
+    }
+
+    // 🔹 CRIAR FUNCIONÁRIO
+    @PostMapping
     public ResponseEntity<Usuario> criarUsuario(@RequestBody Usuario usuario) {
-        Usuario novoUsuario = usuarioService.salvar(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
+        Usuario novo = usuarioService.salvar(usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novo);
     }
 
+    // 🔹 ATUALIZAR FUNCIONÁRIO
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
+        Usuario atualizado = usuarioService.atualizar(id, usuario);
+        return ResponseEntity.ok(atualizado);
+    }
+
+    // 🔹 DELETAR FUNCIONÁRIO
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
+        usuarioService.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
 }

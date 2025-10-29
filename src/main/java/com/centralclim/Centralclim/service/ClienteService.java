@@ -14,17 +14,32 @@ public class ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
 
+
     public Cliente criarCliente(Cliente cliente) {
+
+        if (cliente.getId() != null && cliente.getId() == 0) {
+            cliente.setId(null);
+        }
         return clienteRepository.save(cliente);
     }
 
+    // Lista todos os clientes
     public List<Cliente> listarTodosClientes() {
         return clienteRepository.findAll();
     }
 
+    // Busca cliente pelo ID
     public Optional<Cliente> buscarClientePorId(Long id) {
         return clienteRepository.findById(id);
     }
 
-
+    // Deleta cliente pelo ID
+    public void deletarCliente(Long id) {
+        if (clienteRepository.existsById(id)) {
+            clienteRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Cliente com ID " + id + " não encontrado.");
+        }
+    }
 }
+
